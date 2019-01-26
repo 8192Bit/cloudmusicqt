@@ -1,3 +1,13 @@
+cloudmusicqt (0.9.6harmattan2019r1) unstable; urgency=low
+
+  * Fixed get song url by music id.
+  * Set all id to unsigned.
+  * Add long press on comment text to copy to clipboard.
+  * Add long press on lyric text to copy to clipboard.
+  * Add click progress bar to seek audio.
+
+ -- Karin <beyondk2000@gmail.com>  Sat, 26 Jan 2019 15:18:05 +0800
+
 cloudmusicqt (0.9.6) unstable; urgency=low
   * Fix an index out of bounds error.
 

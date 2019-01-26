@@ -41,6 +41,14 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QNetworkProxy::setApplicationProxy(QNetworkProxy(QNetworkProxy::HttpProxy, PROXY_HOST, 8888));
 #endif
 
+#ifdef NL_PATCH
+		qRegisterMetaType<musicId_t>("musicId_t");
+		qRegisterMetaType<playlistId_t>("playlistId_t");
+		qRegisterMetaType<albumId_t>("albumId_t");
+		qRegisterMetaType<articleId_t>("articleId_t");
+		qRegisterMetaType<djId_t>("djId_t");
+#endif
+
     RegisterPlugin(MusicInfo);
     RegisterPlugin(MusicFetcher);
     RegisterPlugin(BlurredItem);
@@ -67,7 +75,11 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     viewer->rootContext()->setContextProperty("qmlApi", new QmlApi(viewer.data()));
     viewer->rootContext()->setContextProperty("collector", new MusicCollector(viewer.data()));
+#ifndef NL_PATCH
     viewer->rootContext()->setContextProperty("appVersion", app->applicationVersion());
+#else
+    viewer->rootContext()->setContextProperty("appVersion", _NL_VER);
+#endif
     viewer->rootContext()->setContextProperty("qtVersion", qVersion());
 
     MusicDownloader* downloader = MusicDownloader::Instance();

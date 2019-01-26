@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QPointer>
 
+#include "karin.h"
+
 class QDeclarativeView;
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -49,8 +51,13 @@ private:
 
     QPointer<QNetworkReply> currentReply;
 
+#ifndef NL_PATCH
     int playlistId;
     QList<int> idList;
+#else
+    playlistId_t playlistId;
+    QList<playlistId_t> idList;
+#endif
 
     int nextOperation;
     QString operatingId;

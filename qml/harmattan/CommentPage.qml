@@ -168,6 +168,13 @@ Page {
                     text: time
                 }
             }
+
+						//k r1
+						onPressAndHold: {
+							qmlApi.CopyToClipboard(content);
+							infoBanner.showMessage("已复制评论到粘贴板")
+						}
+						//k r1
         }
         footer: Item {
             id: footerItem

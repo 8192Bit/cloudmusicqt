@@ -8,6 +8,8 @@
 #include <eikcmobs.h>
 #endif
 
+#include "karin.h"
+
 namespace QJson { class Parser; }
 
 #ifdef Q_OS_SYMBIAN
@@ -56,6 +58,10 @@ public:
     Q_INVOKABLE bool showAccessPointTip();
     Q_INVOKABLE void clearAccessPointTip();
     Q_INVOKABLE void launchSettingApp();
+
+#ifdef NL_PATCH
+		Q_INVOKABLE void CopyToClipboard(const QString &text);
+#endif
 
 #ifdef Q_OS_SYMBIAN
     void ProcessCommandL(TInt aCommandId);

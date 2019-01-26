@@ -41,7 +41,7 @@ MusicData* MusicData::fromVariant(const QVariant &data, int ver)
         result->id = 0;
         result->size = map.value("size").toInt();
         result->extension = "mp3";
-        result->dfsId = map.value("fid").toByteArray();
+        result->dfsId = map.value("fid").toByteArray(); //karin now always 0
         result->bitrate = map.value("br").toInt();
     }
 
@@ -58,7 +58,7 @@ ArtistData* ArtistData::fromVariant(const QVariant &data)
 
     result->id = map.value("id").toInt();
     result->name = map.value("name").toString();
-    result->avatar = map.value("img1v1Url").toString();
+    result->avatar = map.value("img1v1Url").toString();  //karin now is not a field
 
     return result;
 }
@@ -81,7 +81,7 @@ AlbumData* AlbumData::fromVariant(const QVariant &data, int ver)
         result->name = map.value("name").toString();
         result->picUrl = map.value("picUrl").toString();
 
-        foreach (const QVariant& artistData, map.value("artists").toList()) {
+        foreach (const QVariant& artistData, map.value("artists").toList()) { //??
             ArtistData* artist = ArtistData::fromVariant(artistData);
             if (artist) result->artists.append(artist);
         }
@@ -119,7 +119,11 @@ MusicInfo::~MusicInfo()
 QString MusicInfo::getUrl(Quality quality) const
 {
     MusicData* data = getMusicData(quality);
+#ifndef NL_PATCH
     return data ? getMusicUrl(data->dfsId, data->extension) : "";
+#else
+    return data ? GetMusicUrl(id, data->extension) : ""; //  qualitys fid is always 0, so using musicId
+#endif
 }
 
 QString MusicInfo::musicId() const
@@ -250,7 +254,7 @@ MusicInfo* MusicInfo::fromVariant(const QVariant &data, int ver, QObject *parent
             if (artist) result->artists.append(artist);
         }
     }
-    else {
+    else { //karin json is this
         result->starred = false;
         result->name = map.value("name").toString();
         result->id = map.value("id").toString();
@@ -340,7 +344,11 @@ void MusicFetcher::loadPlayList(const int &listId)
         mCurrentReply->abort();
 
     QUrl url(QString(ApiBaseUrl).append("/v2/playlist/detail"));
+#ifndef NL_PATCH
     url.addEncodedQueryItem("id", QByteArray::number(listId));
+#else
+    url.addEncodedQueryItem("id", QByteArray::number((playlistId_t)listId));
+#endif
     url.addEncodedQueryItem("t", "0");
     url.addEncodedQueryItem("n", "1000");
     url.addEncodedQueryItem("s", "0");
@@ -363,7 +371,11 @@ void MusicFetcher::loadDJDetail(const int &djId)
         mCurrentReply->abort();
 
     QUrl url(QString(ApiBaseUrl).append("/dj/program/detail"));
+#ifndef NL_PATCH
     url.addEncodedQueryItem("id", QByteArray::number(djId));
+#else
+    url.addEncodedQueryItem("id", QByteArray::number((djId_t)djId));
+#endif
 
     mCurrentReply = mNetworkAccessManager->get(QNetworkRequest(url));
     mCurrentReply->setProperty(RequestOptionQuery, OptionQueryDJDetail);
@@ -583,4 +595,15 @@ void MusicFetcher::requestFinished()
         emit dataChanged();
 
     emit loadingChanged();
+}
+
+
+
+//karin
+// id: musicId
+QString MusicInfo::GetMusicUrl(const QString &id, const QString &ext)
+{
+		// http://m2.music.126.net/hmZoNQaqzZALvVp0rE7faA==/0.mp3?v=548405924
+	// 400581140
+		return QString(NL_GET_MUSIC_URL).arg(id).arg(ext);
 }

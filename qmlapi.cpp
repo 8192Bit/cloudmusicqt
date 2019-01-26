@@ -206,3 +206,15 @@ void QmlApi::ProcessCommandL(TInt aCommandId)
     emit processCommand(aCommandId);
 }
 #endif
+
+
+//karin 
+//other
+#ifdef NL_PATCH
+#include <QClipboard>
+
+void QmlApi::CopyToClipboard(const QString &text)
+{
+	QApplication::clipboard()->setText(text);
+}
+#endif

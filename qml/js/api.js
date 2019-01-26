@@ -4,7 +4,8 @@ var qmlApi;
 
 var CloudMusicApi = {
     SNS_AUTH_SINA: "http://music.163.com/api/sns/authorize/?snsType=2&clientType=pc",
-    LOGIN_TOKEN_REFRESH: "http://music.163.com/api/login/token/refresh",
+    //k r1 LOGIN_TOKEN_REFRESH: "http://music.163.com/api/login/token/refresh",
+    LOGIN_TOKEN_REFRESH: "http://music.163.com/weapi/login/token/refresh",
 
     DISCOVERY_RECOMMEND_RESOURCE: "http://music.163.com/api/v1/discovery/recommend/resource",
     DISCOVERY_HOTSPOT: "http://music.163.com/api/discovery/hotspot",
@@ -51,7 +52,8 @@ ApiRequest.prototype.sendRequest = function(onSuccess, onFailure) {
                             if (xhr.status == 200) {
                                 try {
                                     var resp = qmlApi.jsonParse(xhr.responseText)
-                                    if (resp.code == 200)
+																			//k console.log(xhr.responseText);
+                                    if (!resp || resp.code == 200) //k r1 token refresh api response a empty content.
                                         onSuccess(resp);
                                     else
                                         onFailure(resp.code)
@@ -66,6 +68,7 @@ ApiRequest.prototype.sendRequest = function(onSuccess, onFailure) {
                         }
                     };
             xhr.open(this.method, this.url + this.query);
+						//k console.log(this.url + this.query);
             if (this.method == "POST") {
                 xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
                 xhr.setRequestHeader("Content-Length", this.postData.length);

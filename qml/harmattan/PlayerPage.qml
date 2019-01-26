@@ -120,6 +120,8 @@ Page {
         musicFetcher.disconnect()
         musicFetcher.loadFromMusicInfo(musicInfo)
 
+				//k console.log(JSON.stringify(musicInfo));
+
         if (audio.status == Audio.Loading)
             audio.waitingIndex = 0
         else
@@ -257,6 +259,7 @@ Page {
                     audio.source = "file:///" + loc
                 else
                     audio.source = currentMusic.getUrl(MusicInfo.LowQuality)
+										//k console.log(audio.source);
 
                 audio.position = 0
                 audio.play()
@@ -439,6 +442,12 @@ Page {
             id: lyricItem
             anchors.fill: parent
             onClicked: coverFlip.lrcVisible = false
+						//k r1
+						onPressAndHold: {
+							if(lyricItem.copy_lyric_to_clipboard() > 0)
+								infoBanner.showMessage("已复制歌词到粘贴板")
+						}
+						//k r1
         }
         transform: Rotation {
             id: flipRotation
@@ -477,6 +486,20 @@ Page {
         value: audio.position / audio.duration * 1.0
         indeterminate: audio.status == Audio.Loading || audio.status == Audio.Stalled
                        || (!audio.playing && musicFetcher.loading)
+
+											 //k r1
+											 MouseArea{
+												 anchors.centerIn: parent;
+												 enabled: audio.seekable;
+												 width: parent.width;
+												 height: 3 * parent.height;
+												 onReleased:{
+													 if(audio.seekable) {
+														 audio.position = audio.duration * mouse.x / parent.width;
+													 }
+												 }
+											 }
+											 //k r1
     }
 
     Text {

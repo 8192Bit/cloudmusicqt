@@ -37,6 +37,9 @@ SOURCES += main.cpp \
 include(qjson/qjson.pri)
 DEFINES += QJSON_MAKEDLL
 
+#karin
+include(karin.pri)
+
 TRANSLATIONS += i18n/cloudmusicqt_zh.ts
 
 folder_symbian3.source = qml/cloudmusicqt
@@ -49,7 +52,7 @@ folder_js.source = qml/js
 folder_js.target = qml
 
 simulator {
-    DEFINES += SIMULATE_HARMATTAN
+    #DEFINES += SIMULATE_HARMATTAN
     DEPLOYMENTFOLDERS = folder_js
     contains(DEFINES, SIMULATE_HARMATTAN) {
         DEPLOYMENTFOLDERS += folder_harmattan

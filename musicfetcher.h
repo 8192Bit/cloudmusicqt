@@ -6,6 +6,8 @@
 #include <QVariant>
 #include <QDeclarativeParserStatus>
 
+#include "karin.h"
+
 class QNetworkAccessManager;
 class QNetworkReply;
 class MusicDownloadModel;
@@ -17,7 +19,11 @@ class MusicFetcher;
 class MusicData
 {
 public:
+#ifndef NL_PATCH
     int id;
+#else
+		musicId_t id;
+#endif
     int size;
     QString extension;
     QByteArray dfsId;
@@ -29,7 +35,11 @@ public:
 class ArtistData
 {
 public:
+#ifndef NL_PATCH
     int id;
+#else
+		articleId_t id;
+#endif
     QString name;
     QString avatar;
 
@@ -39,7 +49,11 @@ public:
 class AlbumData
 {
 public:
+#ifndef NL_PATCH
     int id;
+#else
+		albumId_t id;
+#endif
     QString name;
     QString picUrl;
     QList<ArtistData*> artists;
@@ -87,6 +101,9 @@ public:
     static QString getPictureUrl(const QByteArray& id);
     static MusicInfo* fromVariant(const QVariant& data, int ver = 0, QObject* parent = 0);
 
+#ifdef NL_PATCH
+    static QString GetMusicUrl(const QString &music_id, const QString& ext = "mp3");
+#endif
 private:
     QVariant rawData;
     int dataVersion;

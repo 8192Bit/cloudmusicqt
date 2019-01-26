@@ -9,6 +9,23 @@ Item {
     id: root
 
     signal clicked
+		//k r1
+		signal pressAndHold;
+
+		function copy_lyric_to_clipboard()
+		{
+			var LN = "\n";
+			if(!view.model)
+				return -1;
+			if(view.model.length === 0)
+				return 0;
+
+				var r = view.model.join(LN);
+				if(r.length !== 0)
+					qmlApi.CopyToClipboard(r);
+				return r.length;
+		}
+		//k r1
 
     property string mid
     property int lineNumber: -1
@@ -73,6 +90,9 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: root.clicked()
+						//k r1
+						onPressAndHold: root.pressAndHold();
+						//k r1
         }
     }
 
