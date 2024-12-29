@@ -66,7 +66,6 @@ public:
 #endif
 
 #ifdef LOGINFIX_PATCH
-        Q_INVOKABLE QString calculateMD5(QByteArray data);
         Q_INVOKABLE QString generateSvgQrCode(QString string);
 #endif
 

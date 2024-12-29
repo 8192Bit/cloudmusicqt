@@ -225,13 +225,7 @@ void QmlApi::CopyToClipboard(const QString &text)
 
 //8192Bit
 #ifdef LOGINFIX_PATCH
-#include <QCryptographicHash>
 #include "qrcodegen/qrcodegen.h"
-
-QString QmlApi::calculateMD5(QByteArray data)
-{
-    return QCryptographicHash::hash(data, QCryptographicHash::Md5).toHex();
-}
 
 QString QmlApi::generateSvgQrCode(QString string)
 {
@@ -242,7 +236,7 @@ QString QmlApi::generateSvgQrCode(QString string)
     uint8_t qr0[qrcodegen_BUFFER_LEN_MAX];
     uint8_t tempBuffer[qrcodegen_BUFFER_LEN_MAX];
 
-    const char* source = string.toStdString().c_str();
+    const char* source = string.toLatin1().data();
     bool ok = qrcodegen_encodeText(source,
         tempBuffer, qr0, qrcodegen_Ecc_MEDIUM,
         qrcodegen_VERSION_MIN, qrcodegen_VERSION_MAX,
