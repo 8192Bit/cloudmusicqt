@@ -1,5 +1,5 @@
-import QtQuick 1.1
-import com.nokia.symbian 1.1
+import QtQuick 1.0
+import com.nokia.symbian 1.0
 import com.yeatse.cloudmusic 1.0
 
 import "../js/api.js" as Api
@@ -259,7 +259,6 @@ Page {
                     text: "登录"
                     visible: false
                     anchors.topMargin: 20
-                    platformInverted: false
                     flat: false
                     anchors.top: passwordField.bottom
                     anchors.horizontalCenterOffset: 0

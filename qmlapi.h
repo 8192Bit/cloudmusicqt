@@ -9,6 +9,7 @@
 #endif
 
 #include "karin.h"
+#include "x8192bit.h"
 
 namespace QJson { class Parser; }
 
@@ -54,6 +55,7 @@ public:
 
     Q_INVOKABLE QString selectFolder(const QString& title, const QString& defaultDir);
 
+
     // For Symbian OS only
     Q_INVOKABLE bool showAccessPointTip();
     Q_INVOKABLE void clearAccessPointTip();
@@ -61,6 +63,11 @@ public:
 
 #ifdef NL_PATCH
 		Q_INVOKABLE void CopyToClipboard(const QString &text);
+#endif
+
+#ifdef LOGINFIX_PATCH
+        Q_INVOKABLE QString calculateMD5(QByteArray data);
+        Q_INVOKABLE QString generateSvgQrCode(QString string);
 #endif
 
 #ifdef Q_OS_SYMBIAN

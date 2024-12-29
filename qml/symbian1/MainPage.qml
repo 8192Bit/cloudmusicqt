@@ -1,5 +1,5 @@
-import QtQuick 1.1
-import com.nokia.symbian 1.1
+import QtQuick 1.0
+import com.nokia.symbian 1.0
 import com.yeatse.cloudmusic 1.0
 
 import "../js/api.js" as Api
@@ -182,7 +182,7 @@ Page {
                             width: parent.width
                             elide: Text.ElideRight
                             wrapMode: Text.Wrap
-                            maximumLineCount: 2
+                            //maximumLineCount: 2
                             font.pixelSize: platformStyle.fontSizeMedium
                             color: "white"
                             text: name
@@ -208,12 +208,13 @@ Page {
                 width: parent.width
                 height: loading || hotSpotModel.count == 0 ? 200 : 0
                 BusyIndicator {
-                    anchors.centerIn: parent
+
+                    //anchors: parent
                     running: loading
                     visible: loading
                 }
                 Button {
-                    anchors.centerIn: parent
+                    //anchors.centerIn: parent
                     iconSource: privateStyle.toolBarIconPath("toolbar-refresh")
                     visible: !loading && hotSpotModel.count == 0
                     onClicked: getHotSpotList()

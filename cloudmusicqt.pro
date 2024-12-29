@@ -20,7 +20,7 @@ HEADERS += \
     musicdownloader.h \
     musicdownloaddatabase.h \
     musicdownloadmodel.h \
-    lyricloader.h
+    lyricloader.h \
 
 SOURCES += main.cpp \
     qmlapi.cpp \
@@ -40,10 +40,17 @@ DEFINES += QJSON_MAKEDLL
 #karin
 include(karin.pri)
 
+#8192Bit
+include(x8192bit.pri)
+include(qrcodegen/qrcodegen.pri)
+
 TRANSLATIONS += i18n/cloudmusicqt_zh.ts
 
 folder_symbian3.source = qml/cloudmusicqt
 folder_symbian3.target = qml
+
+folder_symbian1.source = qml/symbian1
+folder_symbian1.target = qml
 
 folder_harmattan.source = qml/harmattan
 folder_harmattan.target = qml
@@ -60,9 +67,13 @@ simulator {
         SOURCES += harmattanbackgroundprovider.cpp
     }
     else {
-        DEPLOYMENTFOLDERS += folder_symbian3
+        #DEPLOYMENTFOLDERS += folder_symbian3
+        DEPLOYMENTFOLDERS += folder_symbian1
     }
 }
+
+
+        DEPLOYMENTFOLDERS += folder_symbian1
 
 contains(MEEGO_EDITION,harmattan) {
     DEFINES += Q_OS_HARMATTAN
@@ -82,7 +93,17 @@ contains(MEEGO_EDITION,harmattan) {
 }
 
 symbian {
-    DEPLOYMENTFOLDERS = folder_symbian3 folder_js
+    #contains(S60_VERSION, 5.0){
+    contains(QT_VERSION, 4.7.3){
+        DEFINES += Q_OS_S60V5
+        DEPLOYMENTFOLDERS = folder_symbian1 folder_js
+        QT -= webkit
+
+        INCLUDEPATH += $$[QT_INSTALL_PREFIX]/epoc32/include/middleware
+        INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/Qt
+    } else {
+        DEPLOYMENTFOLDERS = folder_symbian3 folder_js
+    }
 
     CONFIG += qt-components localize_deployment
 
@@ -98,7 +119,7 @@ symbian {
 
     TARGET.EPOCHEAPSIZE = 0x40000 0x4000000
 
-    LIBS += -lavkon -leikcore -lgslauncher
+    LIBS += -lavkon -leikcore #-lgslauncher
 
     vendorinfo = "%{\"Yeatse\"}" ":\"Yeatse\""
     my_deployment.pkg_prerules += vendorinfo

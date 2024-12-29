@@ -9,10 +9,12 @@
 #include <QDebug>
 
 #ifdef Q_OS_SYMBIAN
+#ifndef Q_OS_S60V5
 #include <akndiscreetpopup.h>
+#endif
 #include <avkon.hrh>
-#include <gslauncher.h>
-#include <gsfwviewuids.h>
+//#include <gslauncher.h>
+//#include <gsfwviewuids.h>
 #endif
 
 #include "networkaccessmanagerfactory.h"
@@ -93,6 +95,7 @@ void QmlApi::takeScreenShot()
 void QmlApi::showNotification(const QString &title, const QString &text, const int &commandId)
 {
 #ifdef Q_OS_SYMBIAN
+#ifndef Q_OS_S60V5
     TPtrC16 sTitle(static_cast<const TUint16 *>(title.utf16()), title.length());
     TPtrC16 sText(static_cast<const TUint16 *>(text.utf16()), text.length());
     TUid uid = TUid::Uid(0x2006DFF5);
@@ -107,6 +110,7 @@ void QmlApi::showNotification(const QString &title, const QString &text, const i
                     commandId,
                     this,
                     uid ));
+#endif
 #else
     qDebug() << "showNotification:" << title << text << commandId;
 #endif
@@ -194,9 +198,9 @@ void QmlApi::clearAccessPointTip()
 void QmlApi::launchSettingApp()
 {
 #ifdef Q_OS_SYMBIAN
-    CGSLauncher* l = CGSLauncher::NewLC();
-    l->LaunchGSViewL ( KGSAppsPluginUid, TUid::Uid(0), KNullDesC8 );
-    CleanupStack::PopAndDestroy(l);
+    //CGSLauncher* l = CGSLauncher::NewLC();
+    //l->LaunchGSViewL ( KGSAppsPluginUid, TUid::Uid(0), KNullDesC8 );
+    //CleanupStack::PopAndDestroy(l);
 #endif
 }
 
@@ -217,4 +221,53 @@ void QmlApi::CopyToClipboard(const QString &text)
 {
 	QApplication::clipboard()->setText(text);
 }
+#endif
+
+//8192Bit
+#ifdef LOGINFIX_PATCH
+#include <QCryptographicHash>
+#include "qrcodegen/qrcodegen.h"
+
+QString QmlApi::calculateMD5(QByteArray data)
+{
+    return QCryptographicHash::hash(data, QCryptographicHash::Md5).toHex();
+}
+
+QString QmlApi::generateSvgQrCode(QString string)
+{
+    const int border = 4;
+    const QString lightColor = "#FFFFFF";
+    const QString darkColor = "#000000";
+
+    uint8_t qr0[qrcodegen_BUFFER_LEN_MAX];
+    uint8_t tempBuffer[qrcodegen_BUFFER_LEN_MAX];
+
+    const char* source = string.toStdString().c_str();
+    bool ok = qrcodegen_encodeText(source,
+        tempBuffer, qr0, qrcodegen_Ecc_MEDIUM,
+        qrcodegen_VERSION_MIN, qrcodegen_VERSION_MAX,
+        qrcodegen_Mask_AUTO, true);
+    if (!ok)
+    {
+        return "";
+    }
+
+    QString temp = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\"><svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\"0 0 %1 %1\" stroke=\"none\"><rect width=\"100%\" height=\"100%\" fill=\"%2\"/><path d=\"%3\" fill=\"%4\"/></svg>";
+
+    QString part = "";
+    int size = qrcodegen_getSize(qr0);
+    for (int y = 0; y < size; y++)
+    {
+        for (int x = 0; x < size; x++)
+        {
+            if(qrcodegen_getModule(qr0, x, y))
+            {
+                part.append(QString("M%1,%2h1v1h-1z ").arg(QString::number(x + border)).arg(QString::number(y + border)));
+            }
+        }
+    }
+
+    return "data:image/svg+xml;utf8," + temp.arg(QString::number(size + border * 2), lightColor, part, darkColor);
+}
+
 #endif
