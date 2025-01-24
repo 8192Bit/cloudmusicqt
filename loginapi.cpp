@@ -27,11 +27,6 @@ LoginApi::~LoginApi()
 
 int LoginApi::checkQrCodeStatus(QString key)
 {
-    //QUrl url(QString(QrStatusCheckUrl));
-    //url.addQueryItem("key", key);
-    //url.addQueryItem("type", "3");
-
-    //checkNAM();
     manager = new QNetworkAccessManager(this);
 
     QNetworkCookieJar* cookieJar = NetworkCookieJar::Instance();

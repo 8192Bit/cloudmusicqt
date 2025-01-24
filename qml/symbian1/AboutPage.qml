@@ -25,7 +25,7 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("LicensePage.qml"))
             }
         }
-    } //8192Bit QRCode library used so MIT license page is added
+    } //8192Bit QRCode library used, so MIT license page is added
 
     Column {
         anchors {

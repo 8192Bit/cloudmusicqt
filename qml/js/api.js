@@ -23,9 +23,6 @@ var CloudMusicApi = {
 
     //8192Bit
     LOGIN_QR_KEY_GENERATE: "http://music.163.com/api/login/qrcode/unikey",
-    /*
-    LOGIN_NETEASE_EMAIL: "https://music.163.com/api/w/login",
-    */
     USER_DETAIL_FROM_COOKIE: "http://music.163.com/api/nuser/account/get"
 };
 
@@ -59,7 +56,7 @@ ApiRequest.prototype.sendRequest = function(onSuccess, onFailure) {
                             if (xhr.status == 200) {
                                 try {
                                     var resp = qmlApi.jsonParse(xhr.responseText)
-                                                                            //k console.log(xhr.responseText);
+                                                                            //console.log(xhr.responseText);
                                     if (!resp || resp.code == 200) //k r1 token refresh api response a empty content.
                                         onSuccess(resp);
                                     else

@@ -46,8 +46,8 @@ Page {
 
     Item {
         id: viewHeader
-        implicitWidth: screen.width
-        implicitHeight: platformStyle.graphicSizeLarge
+        width: screen.width
+        height: platformStyle.graphicSizeLarge
         z: 1
 
         SearchInput {

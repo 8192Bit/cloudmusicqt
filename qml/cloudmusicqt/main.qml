@@ -182,11 +182,12 @@ PageStackWindow {
 
     Keys.onPressed: {
 //        if (event.key == Qt.Key_Menu) qmlApi.takeScreenShot()
+        console.log(event.key)
     }
 
-    Keys.onVolumeUpPressed: volumeIndicator.volumeUp()
+    Keys.onVolumeUpPressed: {volumeIndicator.volumeUp();console.log("111")}
     Keys.onVolumeDownPressed: volumeIndicator.volumeDown()
-    Keys.onUpPressed: volumeIndicator.volumeUp()
+    Keys.onUpPressed: {volumeIndicator.volumeUp();console.log("222")}
     Keys.onDownPressed: volumeIndicator.volumeDown()
 
     Component.onCompleted: internal.initialize()

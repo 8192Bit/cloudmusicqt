@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import com.nokia.symbian 1.0
+import com.yeatse.cloudmusic 1.0
 
 import "../js/api.js" as Api
 
@@ -85,6 +86,72 @@ Page {
             iconSource: "gfx/logo_icon.png"
             onClicked: player.bringToFront()
         }
+        ToolButton {
+            iconSource: "toolbar-menu"
+            onClicked: logoffMenu.open()
+        }
+
+    }
+
+    Menu {
+        id: logoffMenu
+        MenuItem {
+            text: "退出登录"
+            onClicked: logoutDiagComp.createObject(page)
+
+            Component {
+                id: logoutDiagComp
+                CommonDialog {
+                    id: diag
+                    property bool isClosing: false
+                    titleText: "提示"
+                    content: Item {
+                        width: diag.platformContentMaximumWidth
+                        height: contentCol.height + platformStyle.paddingLarge * 2
+                        Column {
+                            id: contentCol
+                            anchors {
+                                left: parent.left; right: parent.right
+                                top: parent.top; margins: platformStyle.paddingLarge
+                            }
+                            spacing: platformStyle.paddingMedium
+                            Label {
+                                width: parent.width
+                                wrapMode: Text.Wrap
+                                text: "确定要退出登录吗？"
+                            }
+                            ButtonRow {
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                Button {
+                                    id: okButton
+                                    text: "确定"
+
+                                    onClicked: {
+                                        qmlApi.logout()
+                                        user.initialize()
+                                        diag.close()
+                                        pageStack.pop()
+                                    }
+                                }
+                                Button {
+                                    id: cancelButton
+                                    text: "取消"
+                                    onClicked: diag.close()
+                                }
+                            }
+                        }
+                    }
+                    Component.onCompleted: open()
+                    onStatusChanged: {
+                        if (status == DialogStatus.Closing)
+                            isClosing = true
+                        else if (status == DialogStatus.Closed && isClosing)
+                            diag.destroy()
+                    }
+                }
+            }
+        }
     }
 
     ListView {
@@ -140,7 +207,7 @@ Page {
                     }
                     role: "SubTitle"
                     wrapMode: Text.Wrap
-                    maximumLineCount: 2
+                    //maximumLineCount: 2
                     text: signature
                 }
                 ListItemText {

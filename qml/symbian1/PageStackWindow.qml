@@ -67,7 +67,7 @@ Window {
     }
 
     onOrientationChangeStarted: {
-        statusBar.orientation = screen.currentOrientation
+        sbar.orientation = screen.currentOrientation
     }
 
     Item {
@@ -90,9 +90,9 @@ Window {
     StatusBar {
         id: sbar
 
-        //width: parent.width
-        //state: root.showStatusBar ? "Visible" : "Hidden"
-/*
+        width: parent.width
+        state: root.showStatusBar ? "Visible" : "Hidden"
+
         states: [
             State {
                 name: "Visible"
@@ -103,8 +103,7 @@ Window {
                 PropertyChanges { target: sbar; y: -height; opacity: 0 }
             }
         ]
-*/
-        /*
+
         transitions: [
             Transition {
                 from: "Hidden"; to: "Visible"
@@ -120,7 +119,7 @@ Window {
                     NumberAnimation { target: sbar; properties: "opacity"; duration: 200; easing.type: Easing.Linear }
                 }
             }
-        ]*/
+        ]
     }
 
     Item {
@@ -145,9 +144,9 @@ Window {
     ToolBar {
         id: tbar
 
-        //width: parent.width
-        //state: root.showToolBar ? "Visible" : "Hidden"
-/*
+        width: parent.width
+        state: root.showToolBar ? "Visible" : "Hidden"
+
         states: [
             State {
                 name: "Visible"
@@ -174,7 +173,7 @@ Window {
                     NumberAnimation { target: tbar; properties: "opacity"; duration: 200; easing.type: Easing.Linear }
                 }
             }
-        ]*/
+        ]
     }
 
     // event preventer when page transition is active

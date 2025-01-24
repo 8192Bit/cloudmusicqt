@@ -60,7 +60,7 @@ Page {
         id: successPopTimer
         running: false
         triggeredOnStart: false
-        interval: 3000
+        interval: 2000
         onTriggered: pageStack.pop()
     }
 

@@ -27,6 +27,11 @@ Page {
         Api.getHotSopt(s, f)
     }
 
+    Connections {
+        target: user
+        onUserChanged: getHotSpotList()
+    }
+
     tools: ToolBarLayout {
         ToolButton {
             iconSource: "toolbar-back"
@@ -35,24 +40,20 @@ Page {
                 id: quitTimer
                 interval: infoBanner.timeout
                 onRunningChanged: if (running) infoBanner.showMessage("再按一次退出")
+                }
             }
-        }
 
-        ToolButton {
-            iconSource: "toolbar-search"
-            onClicked: pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
-        }
+            ToolButton {
+                iconSource: "toolbar-search"
+                onClicked: pageStack.push(Qt.resolvedUrl("SearchPage.qml"))
+            }
 
-        ToolButton {
-            iconSource: "toolbar-menu"
-            onClicked: mainMenu.open()
-        }
+            ToolButton {
+                iconSource: "toolbar-menu"
+                onClicked: mainMenu.open()
+            }
     }
 
-    Connections {
-        target: user
-        onUserChanged: getHotSpotList()
-    }
 
     Menu {
         id: mainMenu
@@ -208,13 +209,12 @@ Page {
                 width: parent.width
                 height: loading || hotSpotModel.count == 0 ? 200 : 0
                 BusyIndicator {
-
-                    //anchors: parent
+                    anchors.centerIn: parent
                     running: loading
                     visible: loading
                 }
                 Button {
-                    //anchors.centerIn: parent
+                    anchors.centerIn: parent
                     iconSource: privateStyle.toolBarIconPath("toolbar-refresh")
                     visible: !loading && hotSpotModel.count == 0
                     onClicked: getHotSpotList()

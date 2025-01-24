@@ -11,11 +11,19 @@ QtObject {
     function initialize() {
         var token = qmlApi.getCookieToken()
         var uid = qmlApi.getUserId()
+
+        console.log("initializing")
+        console.log("token "+token)
+        console.log("uid   "+uid)
         loggedIn = token != "" && uid != ""
         userChanged()
         if (loggedIn) {
+
+            console.log("sadfafdsfsiyhoiuoojuoijoi")
             collector.refresh()
             refreshUserToken(token)
+        } else {
+            console.log("fuck~~~~~~~~~~~~~~")
         }
     }
 

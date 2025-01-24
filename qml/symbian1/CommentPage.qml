@@ -106,7 +106,7 @@ Page {
             }
         }
         delegate: ListItemFrame {
-            implicitHeight: contentCol.height + platformStyle.paddingLarge * 2
+            height: contentCol.height + platformStyle.paddingLarge * 2
 
             Image {
                 id: avatarImg

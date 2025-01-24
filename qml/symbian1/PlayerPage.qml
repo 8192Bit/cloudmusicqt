@@ -499,10 +499,10 @@ Page {
 
         ProgressBar {
             id: progressBar
-            //anchors {
-            //    left: coverFlip.left; right: coverFlip.right
-            //    top: coverFlip.bottom
-            //}
+            anchors {
+                left: coverFlip.left; right: coverFlip.right
+                top: coverFlip.bottom
+            }
             value: audio.position / audio.duration * 1.0
             indeterminate: audio.status == Audio.Loading || audio.status == Audio.Stalled
                            || (!audio.playing && musicFetcher.loading)
@@ -639,7 +639,7 @@ Page {
     ToolBar {
         id: toolBar
 
-        //y: screen.height - privateStyle.statusBarHeight - toolBar.height
+        y: screen.height - privateStyle.statusBarHeight - toolBar.height
         tools: ToolBarLayout {
             ToolButton {
                 iconSource: "toolbar-back"
@@ -647,10 +647,10 @@ Page {
             }
 
             ToolButton {
-                /*visible: callerType != ""
+                visible: callerType != ""
                          && callerType != callerTypeDJ
                          && callerType != callerTypePrivateFM
-                         && callerType != callerTypeSingle*/
+                         && callerType != callerTypeSingle
                 iconSource: {
                     if (playMode == playModeSingleMusic)
                         return "gfx/repeat_single.svg"

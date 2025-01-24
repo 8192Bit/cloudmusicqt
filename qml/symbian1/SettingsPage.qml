@@ -50,7 +50,6 @@ Page {
                         id: diag
                         property bool isClosing: false
                         titleText: "提示"
-                        buttonTexts: ["确定"]
                         content: Item {
                             width: diag.platformContentMaximumWidth
                             height: contentCol.height + platformStyle.paddingLarge * 2
@@ -71,13 +70,16 @@ Page {
                                     id: checkBox
                                     text: "以后不再提示"
                                 }
+                                Button {
+                                    text: "确定"
+                                    onClicked: {
+                                        if (checkBox.checked)
+                                            qmlApi.clearAccessPointTip()
+                                        diag.close()
+                                        qmlApi.launchSettingApp()
+                                    }
+                                }
                             }
-                        }
-                        onButtonClicked: {
-                            if (checkBox.checked)
-                                qmlApi.clearAccessPointTip()
-
-                            qmlApi.launchSettingApp()
                         }
                         Component.onCompleted: open()
                         onStatusChanged: {

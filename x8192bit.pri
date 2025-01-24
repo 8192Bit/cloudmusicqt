@@ -6,5 +6,7 @@ SOURCES += \
     loginapi.cpp
 
 contains(MEEGO_EDITION,harmattan) {
-    DEFINES += _LOGINFIX_VER=\\\"0.9.6loginfix2024r1\\\"
+    DEFINES += _LOGINFIX_VER=\\\"0.9.6loginfix2025r1\\\"
 }
+
+DEFINES += USING_NCMAPI_HEADERS
