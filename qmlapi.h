@@ -8,7 +8,7 @@
 #include <eikcmobs.h>
 #endif
 
-#include "karin.h"
+#include "typespatch.h"
 
 namespace QJson { class Parser; }
 
@@ -54,14 +54,17 @@ public:
 
     Q_INVOKABLE QString selectFolder(const QString& title, const QString& defaultDir);
 
+
     // For Symbian OS only
     Q_INVOKABLE bool showAccessPointTip();
     Q_INVOKABLE void clearAccessPointTip();
     Q_INVOKABLE void launchSettingApp();
 
-#ifdef NL_PATCH
-		Q_INVOKABLE void CopyToClipboard(const QString &text);
-#endif
+    // by Karin
+    Q_INVOKABLE void CopyToClipboard(const QString &text);
+
+    Q_INVOKABLE QString generateSvgQrCode(QString string);
+
 
 #ifdef Q_OS_SYMBIAN
     void ProcessCommandL(TInt aCommandId);

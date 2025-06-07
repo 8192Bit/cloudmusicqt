@@ -1,3 +1,15 @@
+cloudmusicqt (0.9.7) unstable; urgency=low
+  * Fixed playlist fetching by setting id to qint64.
+  * Fixed song album picture fetching by directly read
+  * Login method has been changed to QR code.
+  * Added license page.
+  * Added VIP tag to songs list.
+  * Integrated patch by Karin.
+  * Changed update check server.
+  * Fixed interpretation of lyric files formatted as [min:sec:millisec].
+
+ -- 8192Bit <x8192bit@qq.com>  Fri, 06 Jun 2025 20:22:02 +0800
+
 cloudmusicqt (0.9.6harmattan2019r1) unstable; urgency=low
 
   * Fixed get song url by music id.

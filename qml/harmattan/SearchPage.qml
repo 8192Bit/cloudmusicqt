@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.meego 1.0
 import com.yeatse.cloudmusic 1.0
 
@@ -49,7 +49,8 @@ Sheet {
                     var prop = {
                         musicId: data.musicId,
                         name: data.musicName,
-                        desc: data.artistsDisplayName + " - " + data.albumName
+                        desc: data.artistsDisplayName + " - " + data.albumName,
+                        fee: data.fee
                     }
                     listModel.append(prop)
                 }
@@ -101,6 +102,7 @@ Sheet {
             delegate: MusicListItem {
                 title: name
                 subTitle: desc
+                upperTag: fee == MusicInfo.VIP ? "VIP" : "";
                 active: player.currentMusic != null && player.currentMusic.musicId == musicId
                 onClicked: player.playSingleMusic(fetcher.dataAt(index))
                 onPressAndHold: contextMenu.init(index)

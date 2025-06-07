@@ -1,13 +1,18 @@
-TEMPLATE = app
+﻿TEMPLATE = app
 TARGET = cloudmusicqt
 
-VERSION = 0.9.6
+VERSION = 0.9.7
 DEFINES += VER=\\\"$$VERSION\\\"
 
 QT += network webkit sql
 
 CONFIG += mobility
 MOBILITY += multimedia systeminfo
+
+QMAKE_CFLAGS += -w
+
+# cuz symbian sdk itself and --std=c99 flag that is essential to build qrcodegen will create PLENTY OF warnings
+# and they are harmless
 
 HEADERS += \
     qmlapi.h \
@@ -20,7 +25,9 @@ HEADERS += \
     musicdownloader.h \
     musicdownloaddatabase.h \
     musicdownloadmodel.h \
-    lyricloader.h
+    lyricloader.h \
+    typespatch.h \
+    loginapi.h
 
 SOURCES += main.cpp \
     qmlapi.cpp \
@@ -32,18 +39,21 @@ SOURCES += main.cpp \
     musicdownloader.cpp \
     musicdownloaddatabase.cpp \
     musicdownloadmodel.cpp \
-    lyricloader.cpp
+    lyricloader.cpp \
+    loginapi.cpp
 
 include(qjson/qjson.pri)
 DEFINES += QJSON_MAKEDLL
 
-#karin
-include(karin.pri)
+include(qrcodegen/qrcodegen.pri)
 
 TRANSLATIONS += i18n/cloudmusicqt_zh.ts
 
 folder_symbian3.source = qml/cloudmusicqt
 folder_symbian3.target = qml
+
+folder_symbian1.source = qml/symbian1
+folder_symbian1.target = qml
 
 folder_harmattan.source = qml/harmattan
 folder_harmattan.target = qml
@@ -52,7 +62,7 @@ folder_js.source = qml/js
 folder_js.target = qml
 
 simulator {
-    #DEFINES += SIMULATE_HARMATTAN
+    DEFINES += SIMULATE_HARMATTAN
     DEPLOYMENTFOLDERS = folder_js
     contains(DEFINES, SIMULATE_HARMATTAN) {
         DEPLOYMENTFOLDERS += folder_harmattan
@@ -82,7 +92,17 @@ contains(MEEGO_EDITION,harmattan) {
 }
 
 symbian {
-    DEPLOYMENTFOLDERS = folder_symbian3 folder_js
+    #contains(S60_VERSION, 5.0){
+    contains(QT_VERSION, 4.7.3){
+        DEFINES += Q_OS_S60V5
+        DEPLOYMENTFOLDERS = folder_symbian1 folder_js
+        QT -= webkit
+
+        INCLUDEPATH += $$[QT_INSTALL_PREFIX]/epoc32/include/middleware
+        INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/Qt
+    } else {
+        DEPLOYMENTFOLDERS = folder_symbian3 folder_js
+    }
 
     CONFIG += qt-components localize_deployment
 

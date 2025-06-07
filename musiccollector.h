@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include "karin.h"
+#include "typespatch.h"
 
 class QDeclarativeView;
 class QNetworkAccessManager;

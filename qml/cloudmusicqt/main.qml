@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.symbian 1.1
 import com.nokia.extras 1.1
 import QtMobility.systeminfo 1.2
@@ -51,7 +51,7 @@ PageStackWindow {
                             }
                         }
                     }
-            xhr.open("GET", "http://yeatse.com/cloudmusicqt/symbian.ver")
+            xhr.open("GET", "http://symbiantranscoder.pythonanywhere.com/cloudmusicqt/symbian3.ver")
             xhr.send(null)
         }
 
@@ -59,7 +59,7 @@ PageStackWindow {
             QueryDialog {
                 id: dialog
                 property bool closing: false
-                property string downUrl
+                property string downUrl: ""
                 titleText: "目测新版本粗现"
                 acceptButtonText: "下载"
                 rejectButtonText: "取消"
@@ -182,6 +182,7 @@ PageStackWindow {
 
     Keys.onPressed: {
 //        if (event.key == Qt.Key_Menu) qmlApi.takeScreenShot()
+        console.log(event.key)
     }
 
     Keys.onVolumeUpPressed: volumeIndicator.volumeUp()

@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.meego 1.0
 import "./UIConstants.js" as UI
 
@@ -12,7 +12,22 @@ Page {
             platformIconId: "toolbar-back"
             onClicked: pageStack.pop()
         }
+        ToolIcon {
+            platformIconId: "toolbar-view-menu"
+            onClicked: mainMenu.open()
+        }
     }
+
+    Menu {
+        id: mainMenu
+        MenuLayout {
+            MenuItem {
+                text: "第三方软件许可"
+                onClicked: pageStack.push(Qt.resolvedUrl("LicensePage.qml"))
+            }
+        }
+    }
+
 
     Column {
         anchors {

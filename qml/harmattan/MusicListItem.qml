@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import "./UIConstants.js" as UI
 
 ListItemFrame {
@@ -6,6 +6,8 @@ ListItemFrame {
 
     property bool active: false
     property bool showIndex: false
+    property alias upperTag: upperTagText.text
+    property alias lowerTag: lowerTagText.text
     property alias title: titleText.text
     property alias subTitle: subTitleText.text
 
@@ -39,7 +41,8 @@ ListItemFrame {
         anchors {
             left: showIndex ? indexText.right : parent.left;
             leftMargin: showIndex ? 0 : UI.PADDING_LARGE
-            right: parent.right
+            right: upperTag != "" || lowerTag != "" ? tagColumn.left : parent.right
+            rightMargin: upperTag != "" || lowerTag != "" ? 0 : UI.PADDING_LARGE
             verticalCenter: parent.verticalCenter
         }
         spacing: UI.PADDING_SMALL
@@ -60,4 +63,65 @@ ListItemFrame {
             elide: Text.ElideRight
         }
     }
+
+
+    Column {
+        id: tagColumn
+        spacing: UI.PADDING_LARGE
+
+        anchors {
+            top: parent.top
+            topMargin: UI.PADDING_SMALL
+            bottom: parent.bottom
+            bottomMargin: UI.PADDING_SMALL
+            right: parent.right
+            rightMargin: UI.PADDING_SMALL
+        }
+
+        Rectangle {
+            id: upperTagRect
+            width: upperTagText.width + UI.PADDING_SMALL
+            height: parent.height / 2.5
+            color: "transparent"
+            radius: 4
+            border.width: 2
+            border.color: UI.COLOR_INVERTED_FOREGROUND
+            visible: upperTag != ""
+
+            Text {
+                id: upperTagText
+                text: ""
+                color: UI.COLOR_INVERTED_FOREGROUND
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 7
+                horizontalAlignment: Text.AlignRight
+            }
+
+        }
+
+        Rectangle {
+            id: lowerTagRect
+            width: lowerTagText.width + platformStyle.paddingSmall
+            height: parent.height / 2.5
+            color: "transparent"
+            radius: 4
+            border.width: 2
+            border.color: UI.COLOR_INVERTED_FOREGROUND
+            visible: lowerTag != ""
+
+            Text {
+                id: lowerTagText
+                text: ""
+                color: UI.COLOR_INVERTED_FOREGROUND
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 7
+                horizontalAlignment: Text.AlignRight
+            }
+        }
+    }
+
+
+
 }

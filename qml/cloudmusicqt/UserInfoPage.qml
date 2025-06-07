@@ -1,5 +1,6 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.symbian 1.1
+import com.yeatse.cloudmusic 1.0
 
 import "../js/api.js" as Api
 
@@ -85,7 +86,42 @@ Page {
             iconSource: "gfx/logo_icon.png"
             onClicked: player.bringToFront()
         }
+        ToolButton {
+            iconSource: "toolbar-menu"
+            onClicked: logoffMenu.open()
+        }
     }
+
+    Menu {
+        id: logoffMenu
+        MenuItem {
+            text: "退出登录"
+            onClicked: logoutDialogComponent.createObject(page)
+
+            Component {
+                id: logoutDialogComponent
+                QueryDialog {
+                    id: logoutDialog
+                    property bool isClosing: false
+                    titleText: "提示"
+                    message: "确定要退出登录吗？"
+                    acceptButtonText: "确定"
+                    rejectButtonText: "取消"
+
+                    onAccepted: {
+                        qmlApi.logout()
+                        user.initialize()
+                        logoutDialog.close()
+                        pageStack.pop()
+                    }
+
+                    Component.onCompleted: open()
+                }
+
+            }
+        }
+    }
+
 
     ListView {
         id: listView
@@ -95,7 +131,7 @@ Page {
             width: listView.width
             spacing: platformStyle.paddingLarge
             ViewHeader {
-                title: "个人主页"
+                title: qmlApi.getUserId() == userId ? "个人主页" : "用户主页"
             }
             Item {
                 anchors { left: parent.left; right: parent.right; margins: platformStyle.paddingLarge }

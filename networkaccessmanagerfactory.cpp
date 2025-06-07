@@ -3,7 +3,6 @@
 #include <QNetworkAccessManager>
 #include <QSettings>
 #include <QSystemDeviceInfo>
-#include <QDebug>
 
 #include "userconfig.h"
 
@@ -14,7 +13,6 @@ QNetworkAccessManager* NetworkAccessManagerFactory::create(QObject *parent)
     QNetworkCookieJar* cookieJar = NetworkCookieJar::Instance();
     manager->setCookieJar(cookieJar);
     cookieJar->setParent(0);
-
     return manager;
 }
 
@@ -60,7 +58,9 @@ void NetworkCookieJar::loadExtraCookies()
     QList<QNetworkCookie> extraCookies;
     extraCookies.append(QNetworkCookie("appver", "1.6.1.82809"));
     extraCookies.append(QNetworkCookie("channel", "netease"));
-    extraCookies.append(QNetworkCookie("deviceId", QtMobility::QSystemDeviceInfo().uniqueDeviceID().toUpper()));
+#ifndef Q_OS_S60V5
+    //extraCookies.append(QNetworkCookie("deviceId", QtMobility::QSystemDeviceInfo().uniqueDeviceID().toUpper()));
+#endif
     extraCookies.append(QNetworkCookie("os", "pc"));
     extraCookies.append(QNetworkCookie("osver", "Microsoft-Windows-8-Professional-build-9200-64bit"));
     setCookiesFromUrl(extraCookies, QUrl("http://music.163.com"));

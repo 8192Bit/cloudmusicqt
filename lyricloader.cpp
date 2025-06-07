@@ -165,7 +165,7 @@ bool LyricLoader::processContent(const QString &content)
         emit lyricChanged();
     }
 
-    const QRegExp rx("\\[(\\d+):(\\d+(\\.\\d+)?)\\]");
+    const QRegExp rx("\\[(\\d+):(\\d+((\\.\\d+)|(\\:\\d+))?)\\]");
 
     mRawData = content;
     int pos = rx.indexIn(content);
@@ -180,7 +180,7 @@ bool LyricLoader::processContent(const QString &content)
         int lastPos;
         QList<int> timeLabels;
         do {
-            timeLabels << (rx.cap(1).toInt() * 60 + rx.cap(2).toDouble()) * 1000;
+            timeLabels << (rx.cap(1).toInt() * 60 + rx.cap(2).replace(':', '.').toDouble()) * 1000;
             lastPos = pos + rx.matchedLength();
             pos = rx.indexIn(content, lastPos);
             if (pos == -1) {

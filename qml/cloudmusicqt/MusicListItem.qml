@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 ListItemFrame {
@@ -6,6 +6,8 @@ ListItemFrame {
 
     property bool active: false
     property bool showIndex: false
+    property alias upperTag: upperTagText.text
+    property alias lowerTag: lowerTagText.text
     property alias title: titleText.text
     property alias subTitle: subTitleText.text
 
@@ -39,7 +41,8 @@ ListItemFrame {
         anchors {
             left: showIndex ? indexText.right : parent.left;
             leftMargin: showIndex ? 0 : platformStyle.paddingLarge
-            right: parent.right
+            right: upperTag != "" || lowerTag != "" ? tagColumn.left : parent.right
+            rightMargin: upperTag != "" || lowerTag != "" ? 0 : platformStyle.paddingLarge
             verticalCenter: parent.verticalCenter
         }
         spacing: platformStyle.paddingSmall
@@ -60,4 +63,63 @@ ListItemFrame {
             elide: Text.ElideRight
         }
     }
+
+    Column {
+        id: tagColumn
+        spacing: 11
+
+        anchors {
+            top: parent.top
+            topMargin: platformStyle.paddingSmall
+            bottom: parent.bottom
+            bottomMargin: platformStyle.paddingSmall
+            right: parent.right
+            rightMargin: platformStyle.paddingSmall
+        }
+
+        Rectangle {
+            id: upperTagRect
+            width: upperTagText.width + platformStyle.paddingSmall
+            height: parent.height / 2.5
+            color: platformStyle.colorNormalDark
+            radius: 4
+            border.width: 2
+            border.color: platformStyle.colorNormalLight
+            visible: upperTag != ""
+
+            Text {
+                id: upperTagText
+                text: ""
+                color: platformStyle.colorNormalLight
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 7
+                horizontalAlignment: Text.AlignRight
+            }
+
+        }
+
+        Rectangle {
+            id: lowerTagRect
+            width: lowerTagText.width + platformStyle.paddingSmall
+            height: parent.height / 2.5
+            color: platformStyle.colorNormalDark
+            radius: 4
+            border.width: 2
+            border.color: platformStyle.colorNormalLight
+            visible: lowerTag != ""
+
+            Text {
+                id: lowerTagText
+                text: ""
+                color: platformStyle.colorNormalLight
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 7
+                horizontalAlignment: Text.AlignRight
+            }
+        }
+    }
+
+
 }

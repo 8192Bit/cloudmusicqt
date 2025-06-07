@@ -90,13 +90,17 @@ AlbumData* AlbumData::fromVariant(const QVariant &data, int ver)
         result->id = map.value("id").toInt();
         result->name = map.value("name").toString();
         QByteArray picStr;
-        if (map.contains("pic_str")) {
+        if (map.contains("picUrl")) {
+            result->picUrl = map.value("picUrl").toString();
+        } else if (map.contains("pic_str")) {
             picStr = map.value("pic_str").toByteArray();
+            result->picUrl = MusicInfo::getPictureUrl(picStr);
         }
         else {
             picStr = map.value("picStr").toByteArray();
+            result->picUrl = MusicInfo::getPictureUrl(picStr);
         }
-        result->picUrl = MusicInfo::getPictureUrl(picStr);
+
     }
 
     return result;
@@ -119,11 +123,7 @@ MusicInfo::~MusicInfo()
 QString MusicInfo::getUrl(Quality quality) const
 {
     MusicData* data = getMusicData(quality);
-#ifndef NL_PATCH
-    return data ? getMusicUrl(data->dfsId, data->extension) : "";
-#else
     return data ? GetMusicUrl(id, data->extension) : ""; //  qualitys fid is always 0, so using musicId
-#endif
 }
 
 QString MusicInfo::musicId() const
@@ -170,6 +170,11 @@ QString MusicInfo::artistsDisplayName() const
     return list.join(",");
 }
 
+MusicInfo::Fee MusicInfo::musicFee() const
+{
+    return fee;
+}
+
 MusicData* MusicInfo::getMusicData(Quality quality) const
 {
     if (quality == LowQuality) return lMusic ? lMusic : mMusic ? mMusic : hMusic;
@@ -205,14 +210,6 @@ static QByteArray getEncryptedId(const QByteArray& songId)
     result.replace('/', '_');
     result.replace('+', "-");
     return result;
-}
-
-QString MusicInfo::getMusicUrl(const QByteArray &id, const QString &ext)
-{
-    static int control = 0;
-    return QString("http://m%1.music.126.net/%2/%3.%4?v=%5")
-            .arg(QString::number((control++ % 4) / 2 + 1), getEncryptedId(id), id, ext,
-                 QString::number(QDateTime::currentDateTime().toTime_t() % 1000000000));
 }
 
 QString MusicInfo::getPictureUrl(const QByteArray &id)
@@ -271,6 +268,8 @@ MusicInfo* MusicInfo::fromVariant(const QVariant &data, int ver, QObject *parent
             ArtistData* artist = ArtistData::fromVariant(ar);
             if (artist) result->artists.append(artist);
         }
+
+        result->fee = (Fee) map.value("fee").toInt();
     }
 
     return result;
@@ -336,7 +335,7 @@ void MusicFetcher::loadRecommend(int offset, bool total, int limit)
     emit loadingChanged();
 }
 
-void MusicFetcher::loadPlayList(const int &listId)
+void MusicFetcher::loadPlayList(const playlistId_t &listId)
 {
     if (!isComponentComplete) return;
 
@@ -344,11 +343,7 @@ void MusicFetcher::loadPlayList(const int &listId)
         mCurrentReply->abort();
 
     QUrl url(QString(ApiBaseUrl).append("/v2/playlist/detail"));
-#ifndef NL_PATCH
-    url.addEncodedQueryItem("id", QByteArray::number(listId));
-#else
     url.addEncodedQueryItem("id", QByteArray::number((playlistId_t)listId));
-#endif
     url.addEncodedQueryItem("t", "0");
     url.addEncodedQueryItem("n", "1000");
     url.addEncodedQueryItem("s", "0");
@@ -371,11 +366,7 @@ void MusicFetcher::loadDJDetail(const int &djId)
         mCurrentReply->abort();
 
     QUrl url(QString(ApiBaseUrl).append("/dj/program/detail"));
-#ifndef NL_PATCH
-    url.addEncodedQueryItem("id", QByteArray::number(djId));
-#else
     url.addEncodedQueryItem("id", QByteArray::number((djId_t)djId));
-#endif
 
     mCurrentReply = mNetworkAccessManager->get(QNetworkRequest(url));
     mCurrentReply->setProperty(RequestOptionQuery, OptionQueryDJDetail);
@@ -539,7 +530,6 @@ void MusicFetcher::requestFinished()
         mDataList.clear();
         emit dataChanged();
     }
-
     mRawData = mParser->parse(mCurrentReply->readAll()).toMap();
     mLastError = mRawData.value("code", -1).toInt();
     if (mLastError != 200) {
@@ -605,5 +595,5 @@ QString MusicInfo::GetMusicUrl(const QString &id, const QString &ext)
 {
 		// http://m2.music.126.net/hmZoNQaqzZALvVp0rE7faA==/0.mp3?v=548405924
 	// 400581140
-		return QString(NL_GET_MUSIC_URL).arg(id).arg(ext);
+                return QString("http://music.163.com/song/media/outer/url?id=%1.%2").arg(id).arg(ext);
 }

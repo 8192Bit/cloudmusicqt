@@ -1,4 +1,4 @@
-.pragma library
+﻿.pragma library
 
 var qmlApi;
 
@@ -19,7 +19,11 @@ var CloudMusicApi = {
     RESOURCE_COMMENTS: "http://music.163.com/api/v1/resource/comments/",
 
     PLAYLIST_SUBSCRIBE: "http://music.163.com/api/playlist/subscribe/",
-    PLAYLIST_UNSUBSCRIBE: "http://music.163.com/api/playlist/unsubscribe/"
+    PLAYLIST_UNSUBSCRIBE: "http://music.163.com/api/playlist/unsubscribe/",
+
+    //8192Bit
+    LOGIN_QR_KEY_GENERATE: "http://music.163.com/api/login/qrcode/unikey",
+    USER_DETAIL_FROM_COOKIE: "http://music.163.com/api/nuser/account/get"
 };
 
 var ApiRequest = function(url, method) {
@@ -52,7 +56,7 @@ ApiRequest.prototype.sendRequest = function(onSuccess, onFailure) {
                             if (xhr.status == 200) {
                                 try {
                                     var resp = qmlApi.jsonParse(xhr.responseText)
-																			//k console.log(xhr.responseText);
+                                                                            //console.log(xhr.responseText);
                                     if (!resp || resp.code == 200) //k r1 token refresh api response a empty content.
                                         onSuccess(resp);
                                     else
@@ -68,7 +72,7 @@ ApiRequest.prototype.sendRequest = function(onSuccess, onFailure) {
                         }
                     };
             xhr.open(this.method, this.url + this.query);
-						//k console.log(this.url + this.query);
+                        //k console.log(this.url + this.query);
             if (this.method == "POST") {
                 xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
                 xhr.setRequestHeader("Content-Length", this.postData.length);
@@ -158,4 +162,34 @@ function subscribePlaylist(option, onSuccess, onFailure) {
     var query = { id: option.id };
     req.setQuery(query);
     req.sendRequest(onSuccess, onFailure);
+}
+
+//8192Bit
+function generateQrKey(onSuccess, onFailure) {
+    var req = new ApiRequest(CloudMusicApi.LOGIN_QR_KEY_GENERATE);
+    req.setQuery({ type: 3 });
+    req.sendRequest(onSuccess, onFailure);
+}
+/*
+function loginByEmail(email, password, onSuccess, onFailure) {
+    var req = new ApiRequest(CloudMusicApi.LOGIN_NETEASE_EMAIL);
+    var query = {
+        type: '0',
+        https: 'true',
+        username: email,
+        password: qmlApi.calculateMD5(password),
+        rememberLogin: 'true'
+    };
+    req.setQuery(query);
+    req.sendRequest(onSuccess, onFailure);
+}
+*/
+
+function getUserDetailByCookie(onSuccess, onFailure) {
+    var req = new ApiRequest(CloudMusicApi.USER_DETAIL_FROM_COOKIE);
+    req.sendRequest(onSuccess, onFailure);
+}
+
+function getHttpUrl(url) {
+    return url.replace("https://", "http://")
 }

@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.symbian 1.1
 import com.yeatse.cloudmusic 1.0
 
@@ -91,7 +91,8 @@ Page {
                     var prop = {
                         musicId: data.musicId,
                         name: data.musicName,
-                        desc: data.artistsDisplayName + " - " + data.albumName
+                        desc: data.artistsDisplayName + " - " + data.albumName,
+                        fee: data.fee
                     }
                     listModel.append(prop)
                 }
@@ -105,15 +106,20 @@ Page {
 
         function fillMetaData() {
             var ret = getRawData().playlist
-            coverImageUrl = Api.getScaledImageUrl(qmlApi.getNetEaseImageUrl(ret.coverImgId), 200)
+            var isCreatorAvailable = !(typeof(ret.creator) == "undefined")
+            coverImageUrl = Api.getScaledImageUrl(Api.getHttpUrl(ret.coverImgUrl), 200)
             name = ret.name
-            author = ret.creator.nickname
+            author = ( isCreatorAvailable ? ret.creator.nickname : "未知作者")
+            // creator might be set to null under some special circumtances, preventing the display of other metadata
             favoriteCount = ret.subscribedCount
             commentCount = ret.commentCount
             shareCount = ret.shareCount
-            subscribed = ret.subscribed
+            subscribed = (typeof(ret.subscribed) == "undefined" ? false : ret.subscribed)
+            // subscribed might be set to null when not logged in, preventing the display of other metadata
+            // origin requested
             commentId = ret.commentThreadId
-            subscribeBtn.enabled = user.loggedIn && ret.creator.userId != qmlApi.getUserId()
+            subscribeBtn.enabled = user.loggedIn && (isCreatorAvailable ? ret.creator.userId != qmlApi.getUserId() : true)
+            // and this too
         }
     }
 
@@ -204,6 +210,7 @@ Page {
             showIndex: true
             title: name
             subTitle: desc
+            upperTag: fee == MusicInfo.VIP ? "VIP" : "";
             active: player.currentMusic != null && player.currentMusic.musicId == musicId
             onClicked: player.playFetcher(fetcher.type, {listId: listId}, fetcher, index)
             onPressAndHold: contextMenu.init(index)

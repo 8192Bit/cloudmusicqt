@@ -65,7 +65,7 @@ PageStackWindow {
                             }
                         }
                     }
-            xhr.open("GET", "http://yeatse.com/cloudmusicqt/harmattan.ver")
+            xhr.open("GET", "http://symbiantranscoder.pythonanywhere.com/cloudmusicqt/harmattan.ver")
             xhr.send(null)
         }
 

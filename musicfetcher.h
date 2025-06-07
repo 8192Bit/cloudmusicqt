@@ -6,7 +6,7 @@
 #include <QVariant>
 #include <QDeclarativeParserStatus>
 
-#include "karin.h"
+#include "typespatch.h"
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -19,11 +19,8 @@ class MusicFetcher;
 class MusicData
 {
 public:
-#ifndef NL_PATCH
-    int id;
-#else
-		musicId_t id;
-#endif
+    // by Karin
+    musicId_t id;
     int size;
     QString extension;
     QByteArray dfsId;
@@ -35,11 +32,8 @@ public:
 class ArtistData
 {
 public:
-#ifndef NL_PATCH
-    int id;
-#else
-		articleId_t id;
-#endif
+    // by Karin
+    articleId_t id;
     QString name;
     QString avatar;
 
@@ -49,11 +43,8 @@ public:
 class AlbumData
 {
 public:
-#ifndef NL_PATCH
-    int id;
-#else
-		albumId_t id;
-#endif
+    // by Karin
+    albumId_t id;
     QString name;
     QString picUrl;
     QList<ArtistData*> artists;
@@ -66,6 +57,7 @@ class MusicInfo : public QObject
 {
     Q_OBJECT
     Q_ENUMS(Quality)
+    Q_ENUMS(Fee)
     Q_PROPERTY(QString musicId READ musicId CONSTANT)
     Q_PROPERTY(QString musicName READ musicName CONSTANT)
     Q_PROPERTY(int musicDuration READ musicDuration CONSTANT)
@@ -74,8 +66,11 @@ class MusicInfo : public QObject
     Q_PROPERTY(QString albumName READ albumName CONSTANT)
     Q_PROPERTY(QString albumImageUrl READ albumImageUrl CONSTANT)
     Q_PROPERTY(QString artistsDisplayName READ artistsDisplayName CONSTANT)
+
+    Q_PROPERTY(Fee fee READ musicFee CONSTANT)
 public:
     enum Quality { LowQuality, MiddleQuality, HighQuality };
+    enum Fee { Free, VIP, VIPAlbum, VIPHQ };
 
     explicit MusicInfo(QObject* parent = 0);
     ~MusicInfo();
@@ -92,18 +87,18 @@ public:
     QString albumImageUrl() const;
     QString artistsDisplayName() const;
 
+    Fee musicFee() const;
+
     MusicData* getMusicData(Quality quality) const;
     int fileSize(Quality quality) const;
     QString extension(Quality quality) const;
     QVariant getRawData() const;
 
-    static QString getMusicUrl(const QByteArray& id, const QString& ext = "mp3");
     static QString getPictureUrl(const QByteArray& id);
     static MusicInfo* fromVariant(const QVariant& data, int ver = 0, QObject* parent = 0);
 
-#ifdef NL_PATCH
+    // by Karin
     static QString GetMusicUrl(const QString &music_id, const QString& ext = "mp3");
-#endif
 private:
     QVariant rawData;
     int dataVersion;
@@ -113,6 +108,8 @@ private:
     bool starred;
     QString name;
     QString commentThreadId;
+
+    Fee fee;
 
     MusicData* lMusic;
     MusicData* mMusic;
@@ -140,7 +137,7 @@ public:
 
     Q_INVOKABLE void loadPrivateFM();
     Q_INVOKABLE void loadRecommend(int offset = 0, bool total = true, int limit = 20);
-    Q_INVOKABLE void loadPlayList(const int &listId);
+    Q_INVOKABLE void loadPlayList(const playlistId_t &listId);
     Q_INVOKABLE void loadDJDetail(const int &djId);
     Q_INVOKABLE void searchSongs(const QString& text);
 

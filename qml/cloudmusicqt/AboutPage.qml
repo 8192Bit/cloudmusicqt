@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Page {
@@ -10,6 +10,20 @@ Page {
         ToolButton {
             iconSource: "toolbar-back"
             onClicked: pageStack.pop()
+        }
+        ToolButton {
+            iconSource: "toolbar-menu"
+            onClicked: mainMenu.open()
+        }
+    }
+
+    Menu {
+        id: mainMenu
+        MenuLayout {
+            MenuItem {
+                text: "第三方软件许可";
+                onClicked: pageStack.push(Qt.resolvedUrl("LicensePage.qml"));
+            }
         }
     }
 
@@ -54,8 +68,17 @@ Page {
         }
         visible: screen.height > 360
         ListItemText {
+            anchors.horizontalCenter: parent.horizontalCenter
             role: "SubTitle"
             text: "Designed & built by Yeatse, 2015"
         }
+
+        ListItemText {
+            anchors.horizontalCenter: parent.horizontalCenter
+            role: "SubTitle"
+            text: "Maintained by Karin, 2019 & 8192Bit, 2025"
+        }
+
     }
+
 }

@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.symbian 1.1
 import com.yeatse.cloudmusic 1.0
 
@@ -130,7 +130,7 @@ Page {
                 }
 
                 onClicked: pageStack.push(Qt.resolvedUrl(user.loggedIn ? "RecommendPage.qml"
-                                                                       : "LoginPage.qml"))
+                                                                       :  "LoginPage.qml"))
             }
 
             Item {

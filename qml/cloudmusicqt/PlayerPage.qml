@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.symbian 1.1
 import QtMultimediaKit 1.1
 import com.yeatse.cloudmusic 1.0

@@ -1,4 +1,4 @@
-.pragma library
+﻿.pragma library
 
 function formatTime(millisec) {
     var secs = Math.ceil(millisec / 1000);
@@ -17,6 +17,7 @@ function verNameToVerCode(vername) {
     if (sl.length == 3) {
         var major = Number(sl[0]), minor = Number(sl[1]), patch = Number(sl[2]);
         return (major << 16) + (minor << 8) + patch;
+        // major * 65536 + minor * 256 + patch
     }
     else {
         return 0;

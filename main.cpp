@@ -1,6 +1,8 @@
 #include <QtGui/QApplication>
 #include <QtDeclarative>
+#ifndef Q_OS_S60V5
 #include <QWebSettings>
+#endif
 
 #include "qmlapplicationviewer.h"
 #include "networkaccessmanagerfactory.h"
@@ -12,6 +14,7 @@
 #include "musicdownloadmodel.h"
 #include "musicdownloaddatabase.h"
 #include "lyricloader.h"
+#include "loginapi.h"
 
 #if defined(Q_OS_HARMATTAN) || defined(SIMULATE_HARMATTAN)
 #include "harmattanbackgroundprovider.h"
@@ -35,28 +38,32 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     app->setApplicationName("CloudMusic");
     app->setOrganizationName("Yeatse");
+#ifndef Q_OS_S60V5
     app->setApplicationVersion(VER);
+#else
+    app->setApplicationVersion("0.9.7");
+#endif
 
 #ifdef PROXY_HOST
     QNetworkProxy::setApplicationProxy(QNetworkProxy(QNetworkProxy::HttpProxy, PROXY_HOST, 8888));
 #endif
 
-#ifdef NL_PATCH
-		qRegisterMetaType<musicId_t>("musicId_t");
-		qRegisterMetaType<playlistId_t>("playlistId_t");
-		qRegisterMetaType<albumId_t>("albumId_t");
-		qRegisterMetaType<articleId_t>("articleId_t");
-		qRegisterMetaType<djId_t>("djId_t");
-#endif
+    // by Karin
+    qRegisterMetaType<musicId_t>("musicId_t");
+    qRegisterMetaType<playlistId_t>("playlistId_t");
+    qRegisterMetaType<albumId_t>("albumId_t");
+    qRegisterMetaType<articleId_t>("articleId_t");
+    qRegisterMetaType<djId_t>("djId_t");
 
     RegisterPlugin(MusicInfo);
     RegisterPlugin(MusicFetcher);
     RegisterPlugin(BlurredItem);
     RegisterPlugin(MusicDownloadModel);
     RegisterPlugin(LyricLoader);
-
+    RegisterPlugin(LoginApi);
+#ifndef Q_OS_S60V5
     QWebSettings::globalSettings()->setUserStyleSheetUrl(QUrl::fromLocalFile("qml/js/default_theme.css"));
-
+#endif
     QScopedPointer<QmlApplicationViewer> viewer(new QmlApplicationViewer);
     viewer->setAttribute(Qt::WA_OpaquePaintEvent);
     viewer->setAttribute(Qt::WA_NoSystemBackground);
@@ -75,11 +82,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     viewer->rootContext()->setContextProperty("qmlApi", new QmlApi(viewer.data()));
     viewer->rootContext()->setContextProperty("collector", new MusicCollector(viewer.data()));
-#ifndef NL_PATCH
+
     viewer->rootContext()->setContextProperty("appVersion", app->applicationVersion());
-#else
-    viewer->rootContext()->setContextProperty("appVersion", _NL_VER);
-#endif
     viewer->rootContext()->setContextProperty("qtVersion", qVersion());
 
     MusicDownloader* downloader = MusicDownloader::Instance();
@@ -91,7 +95,11 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 #if defined(Q_OS_HARMATTAN) || defined(SIMULATE_HARMATTAN)
     viewer->setMainQmlFile(QLatin1String("qml/harmattan/main.qml"));
 #else
+#ifdef Q_OS_S60V5
+    viewer->setMainQmlFile(QLatin1String("qml/symbian1/main.qml"));
+#else
     viewer->setMainQmlFile(QLatin1String("qml/cloudmusicqt/main.qml"));
+#endif
 #endif
     viewer->showExpanded();
 
