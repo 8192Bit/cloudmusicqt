@@ -21,9 +21,8 @@ var CloudMusicApi = {
     PLAYLIST_SUBSCRIBE: "http://music.163.com/api/playlist/subscribe/",
     PLAYLIST_UNSUBSCRIBE: "http://music.163.com/api/playlist/unsubscribe/",
 
-    //8192Bit
     LOGIN_QR_KEY_GENERATE: "http://music.163.com/api/login/qrcode/unikey",
-    USER_DETAIL_FROM_COOKIE: "http://music.163.com/api/nuser/account/get"
+    USER_DETAIL_FROM_COOKIE: "http://music.163.com/api/nuser/account/get",
 };
 
 var ApiRequest = function(url, method) {
@@ -170,20 +169,6 @@ function generateQrKey(onSuccess, onFailure) {
     req.setQuery({ type: 3 });
     req.sendRequest(onSuccess, onFailure);
 }
-/*
-function loginByEmail(email, password, onSuccess, onFailure) {
-    var req = new ApiRequest(CloudMusicApi.LOGIN_NETEASE_EMAIL);
-    var query = {
-        type: '0',
-        https: 'true',
-        username: email,
-        password: qmlApi.calculateMD5(password),
-        rememberLogin: 'true'
-    };
-    req.setQuery(query);
-    req.sendRequest(onSuccess, onFailure);
-}
-*/
 
 function getUserDetailByCookie(onSuccess, onFailure) {
     var req = new ApiRequest(CloudMusicApi.USER_DETAIL_FROM_COOKIE);

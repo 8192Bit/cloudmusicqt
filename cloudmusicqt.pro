@@ -1,7 +1,7 @@
 ﻿TEMPLATE = app
 TARGET = cloudmusicqt
 
-VERSION = 0.9.7
+VERSION = 0.9.8
 DEFINES += VER=\\\"$$VERSION\\\"
 
 QT += network webkit sql
@@ -91,6 +91,8 @@ contains(MEEGO_EDITION,harmattan) {
         qtc_packaging/debian_harmattan/changelog
 }
 
+
+
 symbian {
     #contains(S60_VERSION, 5.0){
     contains(QT_VERSION, 4.7.3){
@@ -102,6 +104,9 @@ symbian {
         INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/Qt
     } else {
         DEPLOYMENTFOLDERS = folder_symbian3 folder_js
+
+        # only available in Symbian Belle
+        DEFINES += PIGLER_API
     }
 
     CONFIG += qt-components localize_deployment
@@ -119,6 +124,10 @@ symbian {
     TARGET.EPOCHEAPSIZE = 0x40000 0x4000000
 
     LIBS += -lavkon -leikcore -lgslauncher
+
+    contains(DEFINES, PIGLER_API) {
+        LIBS += -lpiglerapi_qt.lib -lrandom -laknnotify
+    }
 
     vendorinfo = "%{\"Yeatse\"}" ":\"Yeatse\""
     my_deployment.pkg_prerules += vendorinfo

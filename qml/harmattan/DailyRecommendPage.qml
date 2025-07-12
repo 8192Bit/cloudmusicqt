@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.meego 1.0
 import com.yeatse.cloudmusic 1.0
 
@@ -79,7 +79,7 @@ Page {
                             anchors.horizontalCenter: parent.horizontalCenter
                             font.pixelSize: UI.FONT_SMALL
                             color: "#e54242"
-                            text: Qt.formatDate(new Date(), "dddd")
+                            text: qmlApi.getChineseWeekday()
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter

@@ -1,4 +1,4 @@
-#ifndef MUSICCOLLECTOR_H
+﻿#ifndef MUSICCOLLECTOR_H
 #define MUSICCOLLECTOR_H
 
 #include <QObject>
@@ -51,13 +51,8 @@ private:
 
     QPointer<QNetworkReply> currentReply;
 
-#ifndef NL_PATCH
-    int playlistId;
-    QList<int> idList;
-#else
     playlistId_t playlistId;
     QList<playlistId_t> idList;
-#endif
 
     int nextOperation;
     QString operatingId;

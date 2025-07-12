@@ -1,4 +1,4 @@
-#include "qmlapi.h"
+﻿#include "qmlapi.h"
 
 #include <QDateTime>
 #include <QApplication>
@@ -27,10 +27,32 @@
 
 #include "qrcodegen/qrcodegen.h"
 
+#ifdef PIGLER_API
+
+#include <QtSvg/qsvgrenderer>
+
+QmlApi::QmlApi(QObject *parent) : QObject(parent),
+    mParser(new QJson::Parser),
+    api(new QPiglerAPI(this)),
+    uid(0)
+{
+    qint32 response = api->init("cloudmusicqt");
+    // 如果软件闪退，那么已有的Notification就会残留
+    // 再次启动的时候就会跑出来
+    // 怎么办？只有殺！
+    api->removeAllNotifications();
+    if (response < 0) {
+        // api actually unavailable, but invoke related function won't cause any exception
+    } else {
+        // api successfully initialized
+    }
+}
+#else
 QmlApi::QmlApi(QObject *parent) : QObject(parent),
     mParser(new QJson::Parser)
 {
 }
+#endif
 
 QmlApi::~QmlApi()
 {
@@ -216,11 +238,11 @@ void QmlApi::ProcessCommandL(TInt aCommandId)
 #endif
 
 
-//karin 
+//karin
 //other
 void QmlApi::CopyToClipboard(const QString &text)
 {
-	QApplication::clipboard()->setText(text);
+        QApplication::clipboard()->setText(text);
 }
 
 QString QmlApi::generateSvgQrCode(QString string)
@@ -260,3 +282,47 @@ QString QmlApi::generateSvgQrCode(QString string)
     return "data:image/svg+xml;utf8," + temp.arg(QString::number(size + border * 2), lightColor, part, darkColor);
 }
 
+QString QmlApi::getChineseWeekday()
+{
+    // 星期七
+    char* weekdayChar[] = {"一", "二", "三", "四", "五", "六", "日"};
+
+    QDate date = QDate::currentDate();
+    QString weekday = QString::fromUtf8(weekdayChar[date.dayOfWeek()-1]);
+    return QString::fromUtf8("星期").append(weekday);
+}
+
+#ifdef PIGLER_API
+
+void QmlApi::showStatusPanelNotification(QString text)
+{
+    if (!api) return;
+    if (uid != 0) {
+        api->updateNotification(uid, QString::fromUtf8("网易云音乐"), text);
+    } else {
+        uid = api->createNotification(QString::fromUtf8("网易云音乐"), text);
+        api->setRemoveOnTap(uid, false);
+        api->setNotificationIcon(uid, QImage("qml/cloudmusicqt/gfx/notification.png"));
+    }
+}
+
+void QmlApi::hideStatusPanelNotification()
+{
+    if (!api) return;
+    if (uid == 0) return;
+
+    api->removeNotification(uid);
+}
+
+bool QmlApi::isPiglerAPIAvailable()
+{
+    return true;
+}
+
+
+#else
+bool QmlApi::isPiglerAPIAvailable()
+{
+    return false;
+}
+#endif

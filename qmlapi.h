@@ -1,4 +1,4 @@
-#ifndef QMLAPI_H
+﻿#ifndef QMLAPI_H
 #define QMLAPI_H
 
 #include <QObject>
@@ -6,6 +6,10 @@
 
 #ifdef Q_OS_SYMBIAN
 #include <eikcmobs.h>
+#include <eikenv.h>
+#ifdef PIGLER_API
+#include <QPiglerAPI.h>
+#endif
 #endif
 
 #include "typespatch.h"
@@ -63,18 +67,34 @@ public:
     // by Karin
     Q_INVOKABLE void CopyToClipboard(const QString &text);
 
+
     Q_INVOKABLE QString generateSvgQrCode(QString string);
+
+    Q_INVOKABLE QString getChineseWeekday();
+
+    Q_INVOKABLE bool isPiglerAPIAvailable();
 
 
 #ifdef Q_OS_SYMBIAN
     void ProcessCommandL(TInt aCommandId);
+
+#ifdef PIGLER_API
+    Q_INVOKABLE void showStatusPanelNotification(QString text);
+    Q_INVOKABLE void hideStatusPanelNotification();
+#endif
+
 #endif
 
 signals:
     void processCommand(int commandId);
 
+
 private:
     QJson::Parser* mParser;
+#ifdef PIGLER_API
+    QPiglerAPI *api;
+    qint32 uid;
+#endif
 };
 
 #endif // QMLAPI_H

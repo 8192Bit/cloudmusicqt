@@ -20,6 +20,7 @@ qrc_*.cpp
 Makefile
 *-build-*
 .make.cache
+*.autosave
 
 # Symbian-es
 bld.inf

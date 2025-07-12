@@ -112,6 +112,7 @@ void MusicCollector::removeCollection(const QString &id)
 
 void MusicCollector::refresh()
 {
+    // invoked when app is being initialization, to get user personal playlist id
     if (currentReply && currentReply->isRunning())
         currentReply->abort();
 
@@ -173,6 +174,7 @@ void MusicCollector::loadList()
 
 void MusicCollector::loadFromFetcher(MusicFetcher *fetcher)
 {
+    // invoked when opening your personal playlist in PlayListPage.qml, to get latest liked songs
     if (currentReply) {
         if (currentReply->isRunning())
             currentReply->abort();
@@ -182,8 +184,9 @@ void MusicCollector::loadFromFetcher(MusicFetcher *fetcher)
     }
 
     idList.clear();
-    for (int i = 0; i < fetcher->count(); i++)
+    for (int i = 0; i < fetcher->count(); i++) {
         idList.append(fetcher->dataAt(i)->musicId().toInt());
+    }
 
     emit dataChanged();
 }
@@ -218,8 +221,9 @@ void MusicCollector::requestFinished()
     if (opt == OperationLoadPid) {
         foreach (const QVariant& playlist, resp.value("playlist").toList()) {
             QVariantMap map = playlist.toMap();
+            // a playlist with specialType 5 is your personal playlist
             if (map.value("specialType").toInt() == 5) {
-                playlistId = map.value("id").toInt();
+                playlistId = map.value("id").toLongLong();
                 break;
             }
         }

@@ -1,4 +1,4 @@
-#include <QtGui/QApplication>
+﻿#include <QtGui/QApplication>
 #include <QtDeclarative>
 #ifndef Q_OS_S60V5
 #include <QWebSettings>
@@ -41,7 +41,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 #ifndef Q_OS_S60V5
     app->setApplicationVersion(VER);
 #else
-    app->setApplicationVersion("0.9.7");
+    app->setApplicationVersion("0.9.8");
 #endif
 
 #ifdef PROXY_HOST

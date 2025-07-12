@@ -232,9 +232,8 @@ Page {
                 if (qmlApi.isFileExists(loc))
                     audio.source = "file:///" + loc
                 else
-                    audio.source = currentMusic.getUrl(MusicInfo.LowQuality)
-										//k console.log(audio.source);
-
+                    audio.source = currentMusic.getUrl(MusicInfo.HighQuality)
+                    //k console.log(audio.source);
                 audio.play()
 
                 isMusicCollecting = false
@@ -248,11 +247,18 @@ Page {
                 if (coverFlip.lrcVisible)
                     lyricItem.loadLyric(currentMusic.musicId)
 
+                if (qmlApi.isPiglerAPIAvailable()) {
+                    qmlApi.showStatusPanelNotification("正在播放: %1 - %2".arg(currentMusic.artistsDisplayName).arg(currentMusic.musicName))
+                }
+
                 if (app.pageStack.currentPage != page || !Qt.application.active) {
                     qmlApi.showNotification("网易云音乐",
                                             "正在播放: %1 - %2".arg(currentMusic.artistsDisplayName).arg(currentMusic.musicName),
                                             1)
                 }
+
+                progressArea.enabled = seekable;
+
             }
         }
 
@@ -507,19 +513,23 @@ Page {
             indeterminate: audio.status == Audio.Loading || audio.status == Audio.Stalled
                            || (!audio.playing && musicFetcher.loading)
 
-											 //k r1
-											 MouseArea{
-												 anchors.centerIn: parent;
-												 enabled: audio.seekable;
-												 width: parent.width;
-												 height: 3 * parent.height;
-												 onReleased:{
-													 if(audio.seekable) {
-														 audio.position = audio.duration * mouse.x / parent.width;
-													 }
-												 }
-											 }
-											 //k r1
+            //k r1
+            MouseArea{
+
+                id: progressArea
+
+                anchors.centerIn: parent;
+                enabled: false
+                width: parent.width;
+                height: 3 * parent.height;
+
+                onReleased:{
+                    if(audio.seekable) {
+                        audio.position = audio.duration * mouse.x / parent.width;
+                    }
+                }
+            }
+            //k r1
         }
 
         Text {

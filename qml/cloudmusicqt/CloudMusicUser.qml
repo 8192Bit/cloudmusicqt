@@ -1,4 +1,4 @@
-﻿import QtQuick 1.1
+import QtQuick 1.1
 import "../js/api.js" as Api
 
 QtObject {

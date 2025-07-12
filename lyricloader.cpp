@@ -1,4 +1,4 @@
-#include "lyricloader.h"
+﻿#include "lyricloader.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -165,7 +165,14 @@ bool LyricLoader::processContent(const QString &content)
         emit lyricChanged();
     }
 
-    const QRegExp rx("\\[(\\d+):(\\d+((\\.\\d+)|(\\:\\d+))?)\\]");
+    const QRegExp rx("\\[(\\d+):(\\d+((\\.\\d+)|(\\:\\d+))?)(\\-\\d+)?\\]");
+
+    /* matches:
+       [xx:xx:xx]
+       [xx:xx.xx]
+       [xx:xx:xx-x]
+       [xx:xx.xx-x]
+     */
 
     mRawData = content;
     int pos = rx.indexIn(content);

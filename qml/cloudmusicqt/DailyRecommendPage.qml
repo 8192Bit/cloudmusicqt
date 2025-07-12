@@ -77,7 +77,7 @@ Page {
                             anchors.horizontalCenter: parent.horizontalCenter
                             font.pixelSize: platformStyle.fontSizeSmall
                             color: "#e54242"
-                            text: Qt.formatDate(new Date(), "dddd")
+                            text: qmlApi.getChineseWeekday()
                         }
                         Text {
                             anchors.horizontalCenter: parent.horizontalCenter

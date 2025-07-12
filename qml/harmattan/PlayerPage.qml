@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.meego 1.1
 import QtMultimediaKit 1.1
 import com.yeatse.cloudmusic 1.0
@@ -281,6 +281,9 @@ Page {
 //                                            "正在播放: %1 - %2".arg(currentMusic.artistsDisplayName).arg(currentMusic.musicName),
 //                                            1)
                 }
+
+                progressArea.enabled = seekable;
+
             }
         }
 
@@ -487,19 +490,20 @@ Page {
         indeterminate: audio.status == Audio.Loading || audio.status == Audio.Stalled
                        || (!audio.playing && musicFetcher.loading)
 
-											 //k r1
-											 MouseArea{
-												 anchors.centerIn: parent;
-												 enabled: audio.seekable;
-												 width: parent.width;
-												 height: 3 * parent.height;
-												 onReleased:{
-													 if(audio.seekable) {
-														 audio.position = audio.duration * mouse.x / parent.width;
-													 }
-												 }
-											 }
-											 //k r1
+        //k r1
+        MouseArea{
+            id: progressArea
+            anchors.centerIn: parent;
+            enabled: false;
+            width: parent.width;
+            height: 3 * parent.height;
+            onReleased:{
+                if(audio.seekable) {
+                    audio.position = audio.duration * mouse.x / parent.width;
+                }
+            }
+        }
+        //k r1
     }
 
     Text {

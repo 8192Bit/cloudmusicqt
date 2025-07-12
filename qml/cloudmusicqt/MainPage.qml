@@ -126,7 +126,7 @@ Page {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: platformStyle.fontSizeMedium
-                    text: Qt.formatDateTime(new Date(), "dddd\nM.d")
+                    text: qmlApi.getChineseWeekday() + Qt.formatDateTime(new Date(), "\nM.d");
                 }
 
                 onClicked: pageStack.push(Qt.resolvedUrl(user.loggedIn ? "RecommendPage.qml"

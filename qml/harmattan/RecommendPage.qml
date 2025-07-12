@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.meego 1.0
 import com.yeatse.cloudmusic 1.0
 
@@ -68,7 +68,7 @@ Page {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: UI.FONT_DEFAULT
-                    text: Qt.formatDateTime(new Date(), "dddd\nM.d")
+                    text: qmlApi.getChineseWeekday() + Qt.formatDateTime(new Date(), "\nM.d")
                 }
 
                 onClicked: pageStack.push(Qt.resolvedUrl("DailyRecommendPage.qml"))

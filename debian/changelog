@@ -1,3 +1,12 @@
+cloudmusicqt (0.9.8) unstable; urgency=low
+  * Fixed progress bar seeking.
+  * Fixed VIP songs fetching.
+  * Fixed music collection.
+  * Forced weekday language to Chinese, which is locale-independent now.
+  * Fixed interpretation of lyric files formatted as [xx:xx.xx-x].
+
+ -- 8192Bit <x8192bit@qq.com>  Fri, 11 Jul 2025 06:35:25 +0800
+
 cloudmusicqt (0.9.7) unstable; urgency=low
   * Fixed playlist fetching by setting id to qint64.
   * Fixed song album picture fetching by directly read

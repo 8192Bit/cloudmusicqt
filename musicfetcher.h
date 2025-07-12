@@ -1,4 +1,4 @@
-#ifndef MUSICFETCHER_H
+﻿#ifndef MUSICFETCHER_H
 #define MUSICFETCHER_H
 
 #include <QObject>
@@ -76,6 +76,7 @@ public:
     ~MusicInfo();
 
     Q_INVOKABLE QString getUrl(Quality quality) const;
+    Q_INVOKABLE int getBitrate(Quality quality) const;
 
     QString musicId() const;
     QString musicName() const;
@@ -117,6 +118,8 @@ private:
 
     AlbumData* album;
     QList<ArtistData*> artists;
+
+    QNetworkAccessManager* mManager;
 
     friend class MusicFetcher;
 };

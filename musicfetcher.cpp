@@ -1,4 +1,4 @@
-#include "musicfetcher.h"
+﻿#include "musicfetcher.h"
 
 #include <QtDeclarative>
 #include <QDeclarativeView>
@@ -8,10 +8,13 @@
 #include <QNetworkReply>
 #include <QCryptographicHash>
 #include <QDateTime>
+#include <QEventLoop>
 
 #include "qjson/parser.h"
 #include "musicdownloader.h"
 #include "musicdownloadmodel.h"
+
+#include "networkaccessmanagerfactory.h"
 
 static const char* ApiBaseUrl = "http://music.163.com/api";
 
@@ -107,7 +110,7 @@ AlbumData* AlbumData::fromVariant(const QVariant &data, int ver)
 }
 
 MusicInfo::MusicInfo(QObject *parent) : QObject(parent),
-    dataVersion(0), lMusic(0), mMusic(0), hMusic(0), album(0)
+    dataVersion(0), lMusic(0), mMusic(0), hMusic(0), album(0), mManager(0)
 {
 }
 
@@ -117,13 +120,53 @@ MusicInfo::~MusicInfo()
     delete mMusic;
     delete hMusic;
     delete album;
+    mManager = NULL;
     qDeleteAll(artists);
 }
 
 QString MusicInfo::getUrl(Quality quality) const
 {
+    // fatty, and slow
+    // cache if possible
+
     MusicData* data = getMusicData(quality);
-    return data ? GetMusicUrl(id, data->extension) : ""; //  qualitys fid is always 0, so using musicId
+
+    if(fee == Free){
+        return data ? GetMusicUrl(id, data->extension) : "";
+    }
+
+    QEventLoop loop;
+
+    QUrl url(QString(ApiBaseUrl).append("/song/enhance/player/url"));
+    url.addEncodedQueryItem("ids", "["+id.toAscii()+"]");
+    url.addEncodedQueryItem("br", QByteArray::number(data->bitrate));
+
+    qDebug() << mManager;
+
+    QNetworkReply* reply = mManager->get(QNetworkRequest(url));
+    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+
+    loop.exec();
+
+    // rep finished
+
+    reply->deleteLater();
+
+    QJson::Parser* parser = new QJson::Parser();
+
+    QVariantMap root = parser->parse(reply->readAll()).toMap();
+
+    QString result = root.value("data").toList()[0].toMap().value("url").toString();
+
+    delete parser;
+
+    return result; //  qualitys fid is always 0, so using musicId
+}
+
+int MusicInfo::getBitrate(Quality quality) const
+{
+    MusicData* data = getMusicData(quality);
+    return data ? data->bitrate : 999000;
 }
 
 QString MusicInfo::musicId() const
@@ -417,6 +460,7 @@ void MusicFetcher::loadFromFetcher(MusicFetcher *other)
     mRawData = other->mRawData;
     foreach (MusicInfo* info, other->mDataList) {
         MusicInfo* copy = MusicInfo::fromVariant(info->rawData, info->dataVersion, this);
+        copy->mManager = mNetworkAccessManager;
         if (copy) {
             changed = true;
             mDataList.append(copy);
@@ -434,6 +478,7 @@ void MusicFetcher::loadFromDownloadModel(MusicDownloadModel *model)
     QList<MusicDownloadItem*> list = model->getDataList();
     foreach (MusicDownloadItem* item, list) {
         MusicInfo* info = MusicInfo::fromVariant(item->rawData, -1, this);
+        info->mManager = mNetworkAccessManager;
         if (info) {
             changed = true;
             mDataList.append(info);
@@ -448,6 +493,7 @@ void MusicFetcher::loadFromMusicInfo(MusicInfo *info)
 {
     if (!info) return;
     MusicInfo* copy = MusicInfo::fromVariant(info->rawData, info->dataVersion, this);
+    copy->mManager = mNetworkAccessManager;
     reset();
     if (copy) {
         mDataList.append(copy);
@@ -562,6 +608,7 @@ void MusicFetcher::requestFinished()
 
     foreach (const QVariant& item, list) {
         MusicInfo* data = MusicInfo::fromVariant(item, dataVer, this);
+        data->mManager = mNetworkAccessManager;
         if (data) {
             if (checkDuplicate) {
                 bool add = true;
